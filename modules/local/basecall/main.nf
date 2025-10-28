@@ -8,6 +8,9 @@ process ONT_BASECALL {
     dorado basecaller \\
     ${params.basecall_model} \\
     ${pod5_dir}/ \\
+    --emit-moves \\
+    --device "cuda:all" \\
+    --no-trim \\
     --modified-bases ${params.basecall_modifications} > \\
     ${meta.sampleid}.${meta.flowcellid}.raw.mod.bam
     """
