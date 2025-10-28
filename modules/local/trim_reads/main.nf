@@ -1,9 +1,9 @@
 process TRIM_READS {
         input:
-        tuple(val(meta), path(reads))
+        tuple val(meta), path(reads)
 
         output:
-        tuple(val(meta), path("${meta.sampleid}.${meta.flowcellid}.trim.mod.bam"))
+        tuple val(meta), path("${meta.sampleid}.${meta.flowcellid}.trim.mod.bam")
 
         script:
         """

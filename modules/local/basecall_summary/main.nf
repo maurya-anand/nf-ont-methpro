@@ -1,10 +1,9 @@
-// Summary reads
 process SUMMARY {
         input:
-        tuple(val(meta), path(reads))
+        tuple val(meta), path(reads)
 
         output:
-        tuple(val(meta), path("summary.${meta.sampleid}.${meta.flowcellid}.txt.gz"))
+        tuple val(meta), path("summary.${meta.sampleid}.${meta.flowcellid}.txt.gz")
 
         script:
         """
