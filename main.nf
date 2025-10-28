@@ -5,6 +5,7 @@ nextflow.enable.dsl = 2
 include { ONT_BASECALL as BASECALL_READS } from './modules/local/basecall'
 include { TRIM_READS as TRIM_READS } from './modules/local/trim_reads'
 include { SUMMARY as BASECALL_SUMMARY } from './modules/local/basecall_summary'
+include { FILTER_READS as FILTER_READS } from './modules/local/filter_reads'
 
 workflow {
     ont_reads_ch = channel.fromPath(params.sample_sheet)
@@ -21,4 +22,5 @@ workflow {
     BASECALL_READS(ont_reads_ch)
     TRIM_READS(BASECALL_READS.out)
     BASECALL_SUMMARY(TRIM_READS.out)
+    FILTER_READS(TRIM_READS.out)
 }
