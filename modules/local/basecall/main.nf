@@ -1,8 +1,10 @@
 process ONT_BASECALL {
     input:
     tuple(val(meta), path(pod5_dir))
+
     output:
     tuple(val(meta), path("${meta.sampleid}.${meta.flowcellid}.raw.mod.bam"))
+
     script:
     """
     dorado basecaller \\
