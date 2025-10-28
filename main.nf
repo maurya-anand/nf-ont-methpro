@@ -3,6 +3,7 @@
 nextflow.enable.dsl=2
 
 include { ONT_BASECALL as BASECALL_READS } from './modules/local/basecall'
+include { TRIM_READS as TRIM_READS } from './modules/local/trim_reads'
 
 workflow {
         ont_reads_ch = channel.fromPath( params.sample_sheet  )
@@ -17,4 +18,7 @@ workflow {
             [ meta, pod5_dir ] 
            }
     BASECALL_READS( ont_reads_ch )
+    TRIM_READS( BASECALL_READS.out )
+    // SUMMARYZE_READS
+    // MAP_READS( map_reads_in )
 }
