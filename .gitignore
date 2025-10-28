@@ -209,3 +209,4 @@ data/
 .nextflow.*
 work/
 results/
+notes-comments.txt
