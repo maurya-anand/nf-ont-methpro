@@ -2,7 +2,6 @@
 
 nextflow.enable.dsl=2
 
-
 include { ONT_BASECALL as BASECALL_READS } from './modules/local/basecall'
 
 workflow {
@@ -17,5 +16,5 @@ workflow {
             def pod5_dir = "${row.input_dir}/pod5"
             [ meta, pod5_dir ] 
            }
-    BASECALL_READS( ont_reads_ch )          
+    BASECALL_READS( ont_reads_ch )
 }
