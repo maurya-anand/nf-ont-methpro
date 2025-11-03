@@ -10,7 +10,8 @@ process TRIM_READS {
         total_threads=\$(nproc)
         threads=\$((total_threads - 2))
         dorado trim \\
-        --threads \$threads
+        --threads \$threads \\
+        --sequencing-kit ${params.sequencing_kit} \\
         ${meta.sampleid}.${meta.flowcellid}.raw.mod.bam > \\
         ${meta.sampleid}.${meta.flowcellid}.trim.mod.bam
         """
