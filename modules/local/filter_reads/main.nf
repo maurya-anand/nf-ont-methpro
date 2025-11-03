@@ -9,7 +9,7 @@ process FILTER_READS {
         def filtered_reads = "${meta.sampleid}.${meta.flowcellid}.filtered.mod.bam"
 
         """
-        ont_tools.py filter_bam \\
+        micromamba run -n base ont_tools.py filter_bam \\
         ${params.filter_reads}
         -i ${bam} \\
         -o ${filtered_reads}
