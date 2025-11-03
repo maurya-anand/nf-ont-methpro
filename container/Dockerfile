@@ -10,6 +10,9 @@ RUN apt-get update && \
 
 USER $MAMBA_USER
 
+RUN micromamba install -y -n base python=3.10 && \
+    micromamba clean -a -y
+
 WORKDIR /tools
 
 RUN curl "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.2.0-linux-x64.tar.gz" -o dorado-1.2.0-linux-x64.tar.gz && \
