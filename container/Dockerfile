@@ -26,4 +26,4 @@ RUN curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.2.0-lin
 
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
-ENV PATH="/tools/dorado-1.2.0-linux-x64/bin:/tools/modkit_v0.5.0_u16_x86_64/bin:$PATH"
+ENV PATH="/tools/dorado-1.2.0-linux-x64/bin:/tools/dist_modkit_v0.5.0_5120ef7:$PATH"
