@@ -1,4 +1,6 @@
 process ONT_BASECALL {
+    publishDir "${params.outdir}/${meta.sampleid}/basecall", mode: 'copy'
+
     input:
     tuple val(meta), path(pod5_dir)
 
