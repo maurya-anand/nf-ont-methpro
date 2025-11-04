@@ -103,20 +103,17 @@ results/
 
 | Component | Version |
 |-----------|---------|
-| [Dorado](https://github.com/nanoporetech/dorado) | 1.2.0 |
-| [minimap2](https://github.com/lh3/minimap2) | 12.30 |
-| [samtools](http://www.htslib.org/) | 1.22.1 |
+| [Dorado](https://github.com/nanoporetech/dorado) | 1.2.0+f9443bb8 |
+| [minimap2](https://github.com/lh3/minimap2) | 2.30-r1287 |
+| [samtools](http://www.htslib.org/) | 1.13 |
 | [PEPPER-Margin-DeepVariant](https://github.com/kishwarshafin/pepper) | r0.8 |
 | [modkit](https://github.com/nanoporetech/modkit) | 0.5.0 |
-| [MultiQC](https://multiqc.info/) | v1.32 |
-| [bedtools](https://bedtools.readthedocs.io/) | 2.31.1 |
-| [bcftools](http://samtools.github.io/bcftools/) | 1.22 |
+| [MultiQC](https://multiqc.info/) | 1.32 |
+| [bedtools](https://bedtools.readthedocs.io/) | 2.30.0 |
+| [bcftools](http://samtools.github.io/bcftools/) | 1.13 |
 
 ### Container Images
 
-- **Main container**: `ghcr.io/maurya-anand/nf-ont-methpro:1.0.0`  
-  Built from [Dockerfile](container/Dockerfile) using micromamba with dependencies specified in [environment.yml](container/environment.yml)
-  
 - **PEPPER-DeepVariant container**: `kishwars/pepper_deepvariant:r0.8`  
   Pre-built container for variant calling and haplotagging
 
