@@ -2,7 +2,8 @@ FROM ubuntu:22.04
 
 RUN apt-get update && \
     apt-get install -y \
-    curl gzip samtools bedtools bcftools python3-pip && \
+    curl gzip python3-pip \
+    samtools bedtools bcftools && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -14,7 +15,7 @@ RUN curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.2.0-lin
     curl -L "https://github.com/nanoporetech/modkit/releases/download/v0.5.0/modkit_v0.5.0_u16_x86_64.tar.gz" -o modkit_v0.5.0_u16_x86_64.tar.gz && \
     tar -xzf modkit_v0.5.0_u16_x86_64.tar.gz && \
     rm modkit_v0.5.0_u16_x86_64.tar.gz && \
-    curl -L https://github.com/lh3/minimap2/releases/download/v2.30/minimap2-2.30_x64-linux.tar.bz2 -o minimap2-2.30_x64-linux.tar.bz2 && \
+    curl -L "https://github.com/lh3/minimap2/releases/download/v2.30/minimap2-2.30_x64-linux.tar.bz2" -o minimap2-2.30_x64-linux.tar.bz2 && \
     tar -xvf minimap2-2.30_x64-linux.tar.bz2 && \
     rm minimap2-2.30_x64-linux.tar.bz2 && \
     pip3 install multiqc
