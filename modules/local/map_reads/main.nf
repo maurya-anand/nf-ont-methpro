@@ -7,6 +7,7 @@ process ALIGNMENT {
     output:
     tuple val(sampleid), path("${sampleid}.aligned.sorted.bam"), path("${sampleid}.aligned.sorted.bam.bai"), emit: bam
     path("${sampleid}.alignment.stats.txt"), emit: stats
+    path("${sampleid}.bam.mod.tags.txt"), emit: mod_tags
     path("${sampleid}.minimap2.log"), emit: logs
 
     script:
