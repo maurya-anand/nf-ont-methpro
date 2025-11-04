@@ -32,8 +32,6 @@ This pipeline processes Oxford Nanopore long-read sequencing data for methylatio
         sample_sheet = "samplesheet.csv"
         basecall_model = "dna_r10.4.1_e8.2_400bps_sup@v5.2.0"
         basecall_modifications = "5mCG_5hmCG"
-        filter_reads = "-ml 50 -mq 7 -rd"
-        sequencing_kit = "SQK-LSK110"
         reference = "GrCh38.fa"
         outdir = "results"
     }
