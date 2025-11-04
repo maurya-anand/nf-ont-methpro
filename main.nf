@@ -14,9 +14,9 @@ workflow {
         .map { row ->
             def meta = [
                 sampleid: row.sampleid,
-                input_dir: row.input_dir,
+                pod5_dir: row.pod5_dir,
             ]
-            def pod5_dir = file("${row.input_dir}/pod5")
+            def pod5_dir = file("${row.pod5_dir}/pod5")
             [meta, pod5_dir]
         }
     BASECALLING(ont_reads_ch)
