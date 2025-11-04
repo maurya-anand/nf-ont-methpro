@@ -1,10 +1,10 @@
 # nf-ont-methpro: Oxford Nanopore Methylation Profiling Pipeline
 
-This pipeline processes Oxford Nanopore long-read sequencing data for methylation and variant calling using Nextflow DSL2. It is designed for sample-wise organization and modular analysis.
+A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing data to to generate haplotype-resolved variant calls and DNA methylation profiles.
 
 ## Features
 
-- Basecalling using `Dorado`
+- Basecalling from POD5 files using `Dorado`
 - Read alignment using `minimap2`
 - Variant calling and haplotagging using `PEPPER-Margin-DeepVariant`
 - Methylation calling using `modkit`
@@ -98,6 +98,27 @@ results/
 
 - Adjust resource requirements and containers in `nextflow.config` and `conf/base.config`.
 - Add or remove modules as needed for your workflow.
+
+## Components
+
+| Component | Version |
+|-----------|---------|
+| [Dorado](https://github.com/nanoporetech/dorado) | 1.2.0 |
+| [minimap2](https://github.com/lh3/minimap2) | 12.30 |
+| [samtools](http://www.htslib.org/) | 1.22.1 |
+| [PEPPER-Margin-DeepVariant](https://github.com/kishwarshafin/pepper) | r0.8 |
+| [modkit](https://github.com/nanoporetech/modkit) | 0.5.0 |
+| [MultiQC](https://multiqc.info/) | v1.32 |
+| [bedtools](https://bedtools.readthedocs.io/) | 2.31.1 |
+| [bcftools](http://samtools.github.io/bcftools/) | 1.22 |
+
+### Container Images
+
+- **Main container**: `ghcr.io/maurya-anand/nf-ont-methpro:1.0.0`  
+  Built from [Dockerfile](container/Dockerfile) using micromamba with dependencies specified in [environment.yml](container/environment.yml)
+  
+- **PEPPER-DeepVariant container**: `kishwars/pepper_deepvariant:r0.8`  
+  Pre-built container for variant calling and haplotagging
 
 ## Citation
 
