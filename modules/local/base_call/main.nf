@@ -5,7 +5,7 @@ process ONT_BASECALL {
     tuple val(meta), path(pod5_dir)
 
     output:
-    tuple val(meta.sampleid), path("${meta.sampleid}.raw.mod.bam")
+    tuple val(meta.sampleid), path("${meta.sampleid}.raw.mod.bam"), emit: bam
 
     script:
     """
