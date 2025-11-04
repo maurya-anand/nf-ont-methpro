@@ -3,7 +3,7 @@ process ONT_BASECALL {
     tuple val(meta), path(pod5_dir)
 
     output:
-    tuple val(meta), path("${meta.sampleid}.${meta.flowcellid}.raw.mod.bam")
+    tuple val(meta.sampleid), path("${meta.sampleid}.raw.mod.bam")
 
     script:
     """
@@ -17,8 +17,7 @@ process ONT_BASECALL {
     ${pod5_dir}/ \\
     --emit-moves \\
     --device "\$DEVICE" \\
-    --no-trim \\
     --modified-bases ${params.basecall_modifications} > \\
-    ${meta.sampleid}.${meta.flowcellid}.raw.mod.bam
+    ${meta.sampleid}.raw.mod.bam
     """
 }
