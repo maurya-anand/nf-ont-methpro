@@ -21,7 +21,7 @@ workflow {
         }
     BASECALLING(ont_reads_ch)
     MAPPING(BASECALLING.out.bam)
-    VARIANT_CALLING(MAPPING.out)
+    VARIANT_CALLING(MAPPING.out.bam)
     METHYLATION_CALLING(VARIANT_CALLING.out.bam)
     summary_stats = MAPPING.out.stats
     variant_logs = VARIANT_CALLING.out.logs
