@@ -4,7 +4,7 @@ process SUMMARY {
     input:
         path(stats_files)
         path(log_files)
-        path(methylation_bed), optional: true
+        path(methylation_bed)
 
     output:
         path("multiqc_report.html"), emit: multiqc
