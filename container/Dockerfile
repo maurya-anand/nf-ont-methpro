@@ -1,19 +1,10 @@
-FROM mambaorg/micromamba:2.3.3-ubuntu22.04
-
-USER root
+FROM ubuntu:22.04
 
 RUN apt-get update && \
     apt-get install -y \
-    curl gzip && \
+    curl gzip samtools bedtools bcftools python3-pip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-USER $MAMBA_USER
-
-COPY --chown=$MAMBA_USER:$MAMBA_USER ./container/environment.yml /tmp/
-
-RUN micromamba install -y -n base -f /tmp/environment.yml && \
-    micromamba clean --all --yes
 
 WORKDIR /tools
 
@@ -22,12 +13,10 @@ RUN curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.2.0-lin
     rm dorado-1.2.0-linux-x64.tar.gz && \
     curl -L "https://github.com/nanoporetech/modkit/releases/download/v0.5.0/modkit_v0.5.0_u16_x86_64.tar.gz" -o modkit_v0.5.0_u16_x86_64.tar.gz && \
     tar -xzf modkit_v0.5.0_u16_x86_64.tar.gz && \
-    rm modkit_v0.5.0_u16_x86_64.tar.gz
+    rm modkit_v0.5.0_u16_x86_64.tar.gz && \
+    curl -L https://github.com/lh3/minimap2/releases/download/v2.30/minimap2-2.30_x64-linux.tar.bz2 -o minimap2-2.30_x64-linux.tar.bz2 && \
+    tar -xvf minimap2-2.30_x64-linux.tar.bz2 && \
+    rm minimap2-2.30_x64-linux.tar.bz2 && \
+    pip3 install multiqc
 
-ENV MAMBA_DOCKERFILE_ACTIVATE=1
-
-ENV PATH="/tools/dorado-1.2.0-linux-x64/bin:/tools/dist_modkit_v0.5.0_5120ef7:$PATH"
-
-ENTRYPOINT ["/usr/local/bin/micromamba", "run", "-n", "base", "--"]
-
-CMD ["bash"]
+ENV PATH="/tools/dorado-1.2.0-linux-x64/bin:/tools/dist_modkit_v0.5.0_5120ef7:/tools/minimap2-2.30_x64-linux:$PATH"
