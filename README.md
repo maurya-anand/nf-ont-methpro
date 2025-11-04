@@ -37,6 +37,8 @@ This pipeline processes Oxford Nanopore long-read sequencing data for methylatio
     }
     ```
 
+    For more information on basecall models and modification options, refer to the [Dorado documentation](https://software-docs.nanoporetech.com/dorado/latest/models/selection/#selecting-modified-base-models).
+
 3. **Run the pipeline:**
 
     ```bash
@@ -47,15 +49,15 @@ This pipeline processes Oxford Nanopore long-read sequencing data for methylatio
 
 The pipeline consists of the following main steps:
 
-1. **Basecalling** (`ONT_BASECALL`): - Uses Dorado for basecalling and modified base detection. - Output: unaligned BAM with modifications.
+1. **Basecalling** (`ONT_BASECALL`): - Uses Dorado for basecalling and modified base detection. The output BAM file contains MM (modification type) and ML (modification likelihood) tags. - Output: Unaligned BAM with methylation tags.
 
-2. **Alignment** (`ALIGNMENT`): - Aligns reads to the reference genome with minimap2. - Output: aligned BAM, BAM index, alignment stats, minimap2 log
+2. **Alignment** (`ALIGNMENT`): - Aligns reads to the reference genome with minimap2. - Output: Aligned BAM, alignment statistics.
 
-3. **Variant Calling** (`VARIANT_CALL`): - Calls variants and haplotags reads using PEPPER-Margin-DeepVariant. - Output: haplotagged BAM, VCF, DeepVariant logs, visual report
+3. **Variant Calling** (`VARIANT_CALL`): - Calls variants and haplotags reads using PEPPER-Margin-DeepVariant. - Output: Haplotagged BAM and VCF.
 
-4. **Methylation Calling** (`METHYLATION_CALL`): - Calls methylation using modkit, outputs both BED and bedGraph formats. - Output: methylation BED, bedGraph, modkit logs
+4. **Methylation Calling** (`METHYLATION_CALL`): - Extracts and aggregates methylation calls from haplotagged BAM using modkit, producing both BED and bedGraph formats for visualization and analysis. - Output: Methylation BED and bedGraph files.
 
-5. **Summary Reporting** (`SUMMARY`): - Aggregates stats and logs using MultiQC. - Output: multiqc report
+5. **Summary Reporting** (`SUMMARY`): - Aggregates stats and logs using MultiQC. - Output: MultiQC report
 
 ## Output Directory Structure
 
@@ -70,6 +72,7 @@ results/
             sample1.aligned.sorted.bam
             sample1.aligned.sorted.bam.bai
             sample1.alignment.stats.txt
+            sample1.bam.mod.tags.txt
             sample1.minimap2.log
         variant_call/
             sample1.aligned.sorted.haplotagged.bam
