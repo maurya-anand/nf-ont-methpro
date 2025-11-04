@@ -11,6 +11,7 @@ dependencies:
 - bedtools
 - bcftools
 - whatshap<=2.8
+- multiqc
 - pip
 - pip:
   - numpy
