@@ -7,8 +7,8 @@ process METHYLATION_CALL {
     path reference_fai
 
     output:
-    tuple path("${sampleid}.${haplotype}.methylation.calls.bed"), path("${sampleid}.${haplotype}.modkit.pileup.log"), emit: modbed
-    tuple path("methylation_calls.${haplotype}.bedgraph/*.bedgraph"), path("${sampleid}.${haplotype}.modkit.pileup.bedgraph.log"), emit: bedgraph
+    tuple val(sampleid), val(haplotype), path("${sampleid}.${haplotype}.methylation.calls.bed"), path("${sampleid}.${haplotype}.modkit.pileup.bedmethyl.log"), emit: modbed
+    tuple val(sampleid), val(haplotype), path("methylation_calls.${haplotype}.bedgraph/*.bedgraph"), path("${sampleid}.${haplotype}.modkit.pileup.bedgraph.log"), emit: bedgraph
 
     script:
     """
@@ -33,6 +33,6 @@ process METHYLATION_CALL {
     --cpg \
     --combine-strands \
     --ignore h \
-    --threads \${threads} &> ${sampleid}.${haplotype}.modkit.pileup.log
+    --threads \${threads} &> ${sampleid}.${haplotype}.modkit.pileup.bed.log
     """
 }
