@@ -21,7 +21,7 @@ workflow {
             [meta, pod5_dir]
         }
     METHYLATED_BASECALLING(ont_reads_ch)
-    MAPPING(METHYLATED_BASECALLING.out.bam)
+    MAPPING(METHYLATED_BASECALLING.out.bam,file(params.reference),file("${params.reference}.fai"))
     VARIANT_CALL_AND_PHASING(MAPPING.out.bam)
     EXTRACT_READS_BY_HAPLOTYPE(VARIANT_CALL_AND_PHASING.out.bam)
     hp1_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype1.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP1") }
