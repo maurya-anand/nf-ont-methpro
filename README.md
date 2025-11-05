@@ -55,21 +55,20 @@ A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing dat
    }
    ```
 
-   **Note:** The reference file must have an index (`.fai`) file. Generate it with: `samtools faidx GrCh38.fa`
-
-   For more information on basecall models and modification options, refer to the [Dorado documentation](https://software-docs.nanoporetech.com/dorado/latest/models/selection/#selecting-modified-base-models).
-
-   When `--regions_bed` is provided:
-
-   - Only reads overlapping the specified regions are extracted during haplotype splitting
-   - Methylation calling is performed only on these regions
-   - Significantly reduces processing time for targeted analysis
-
 4. **Run the pipeline:**
 
    ```bash
    nextflow run main.nf -profile docker
    ```
+
+> [!NOTE]
+>
+> - The reference genome file must have a corresponding index (`.fai`) file in the same directory. Generate it with: `samtools faidx GrCh38.fa`
+> - For information on selecting basecall models and modification options, refer to the [Dorado documentation](https://software-docs.nanoporetech.com/dorado/latest/models/selection/#selecting-modified-base-models).
+> - When `--regions_bed` is provided:
+>   - Only reads overlapping the specified regions are extracted during haplotype splitting.
+>   - MMethylation calling and DMR detection are restricted to these regions.
+>   - Significantly reduces processing time for targeted analysis.
 
 ## Workflow Overview
 
@@ -160,6 +159,11 @@ results/
         multiqc_report.html
         multiqc_data/
 ```
+
+> [!NOTE]
+>
+> The `sample1.*.methylation.calls.bed` file follows the [bedMethyl format](https://nanoporetech.github.io/modkit/intro_pileup.html#bedmethyl-column-descriptions)
+> The `sample1.haplotype.differentially.methylated.regions.bed` file follows the [differential methylation output format](https://nanoporetech.github.io/modkit/intro_dmr.html#differential-methylation-output-format)
 
 ## Customization
 
