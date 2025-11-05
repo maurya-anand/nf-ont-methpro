@@ -104,7 +104,7 @@ The pipeline consists of the following main steps:
 6. **Differentially Methylated Regions (DMR)** (`DMR_CALL`):
 
    - Identifies regions with significant methylation differences between haplotypes.
-   - Uses modkit [dmr pair](https://nanoporetech.github.io/modkit/intro_dmr.html#3-detecting-differential-modification-at-single-base-positions) to compare HP1 vs HP2 methylation patterns.
+   - Uses `modkit dmr pair` to compare HP1 vs HP2 methylation patterns.
    - Output: DMR BED file and analysis log.
 
 7. **Summary** (`SUMMARY`):
