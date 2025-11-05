@@ -19,45 +19,80 @@ A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing dat
 
 1. **Prepare your sample sheet** (CSV):
 
-    ```csv
-    sampleid,pod5_dir
-    sample1,/path/to/sample1
-    sample2,/path/to/sample2
-    ```
+   ```csv
+   sampleid,pod5_dir
+   sample1,/path/to/sample1
+   sample2,/path/to/sample2
+   ```
 
-2. **Configure your reference and parameters** in `nextflow.config`:
+2. **Target regions** (BED)
 
-    ```groovy
-    params {
-        sample_sheet = "samplesheet.csv"
-        basecall_model = "dna_r10.4.1_e8.2_400bps_sup@v5.2.0"
-        basecall_modifications = "5mCG_5hmCG"
-        reference = "GrCh38.fa"
-        outdir = "results"
-    }
-    ```
+   ```tsv
+   chr1    1000000 2000000
+   chr2    3000000 4000000
+   ```
 
-    For more information on basecall models and modification options, refer to the [Dorado documentation](https://software-docs.nanoporetech.com/dorado/latest/models/selection/#selecting-modified-base-models).
+3. **Configure your reference and parameters** in `nextflow.config`:
 
-3. **Run the pipeline:**
+   ```groovy
+   params {
+       sample_sheet = "samplesheet.csv"
+       basecall_model = "dna_r10.4.1_e8.2_400bps_sup@v5.2.0"
+       basecall_modifications = "5mCG_5hmCG"
+       reference = "GrCh38.fa"
+       regions_bed = "regions.bed"
+       outdir = "results"
+   }
+   ```
 
-    ```bash
-    nextflow run main.nf -profile docker
-    ```
+   For more information on basecall models and modification options, refer to the [Dorado documentation](https://software-docs.nanoporetech.com/dorado/latest/models/selection/#selecting-modified-base-models).
+
+   When `--regions_bed` is provided:
+
+   - Only reads overlapping the specified regions are extracted during haplotype splitting
+   - Methylation calling is performed only on these regions
+   - Significantly reduces processing time for targeted analysis
+
+4. **Run the pipeline:**
+
+   ```bash
+   nextflow run main.nf -profile docker
+   ```
 
 ## Workflow Overview
 
 The pipeline consists of the following main steps:
 
-1. **Basecalling** (`ONT_BASECALL`): - Uses Dorado for basecalling and modified base detection. The output BAM file contains MM (modification type) and ML (modification likelihood) tags. - Output: Unaligned BAM with methylation tags.
+1. **Basecalling** (`ONT_BASECALL`):
 
-2. **Alignment** (`ALIGNMENT`): - Aligns reads to the reference genome with minimap2. - Output: Aligned BAM, alignment statistics.
+   - Uses Dorado for basecalling and modified base detection. The output BAM file contains MM (modification type) and ML (modification likelihood) tags.
+   - Output: Unaligned BAM with methylation tags.
 
-3. **Variant Calling** (`VARIANT_CALL`): - Calls variants and haplotags reads using PEPPER-Margin-DeepVariant. - Output: Haplotagged BAM and VCF.
+2. **Alignment** (`ALIGNMENT`):
 
-4. **Methylation Calling** (`METHYLATION_CALL`): - Extracts and aggregates methylation calls from haplotagged BAM using modkit, producing both BED and bedGraph formats for visualization and analysis. - Output: Methylation BED and bedGraph files.
+   - Aligns reads to the reference genome with minimap2.
+   - Output: Aligned BAM, alignment statistics.
 
-5. **Summary Reporting** (`SUMMARY`): - Aggregates stats and logs using MultiQC. - Output: MultiQC report
+3. **Variant Calling and Phasing** (`VARIANT_CALL`):
+
+   - Calls variants and haplotags reads using PEPPER-Margin-DeepVariant.
+   - Output: Haplotagged BAM and VCF.
+
+4. **Haplotype Splitting** (`SPLIT_BAM`):
+
+   - Splits haplotagged BAM into haplotype-specific files (HP1, HP2, and untagged reads).
+   - Optionally filters reads by genomic regions when `--regions_bed` is provided.
+   - Output: Three BAM files per sample (HP1, HP2, untagged) with their indices.
+
+5. **Haplotype-Resolved Methylation Calling** (`METHYLATION_CALL`):
+
+   - Extracts and aggregates methylation calls separately for each haplotype using modkit.
+   - Produces both BED and bedGraph formats for visualization and analysis.
+   - Output: Methylation BED and bedGraph files for HP1 and HP2.
+
+6. **Summary** (`SUMMARY`):
+   - Aggregates stats and logs using MultiQC.
+   - Output: MultiQC report
 
 ## Output Directory Structure
 
@@ -82,11 +117,22 @@ results/
             sample1.visual_report.htm
             sample1.pepper.margin.deepvariant.log
             logs/*.log
-        methylation/
-            sample1.methylation.calls.bed
-            sample1.modkit.pileup.log
-            sample1.modkit.pileup.bedgraph.log
-            methylation_calls.bedgraph/*.bedgraph
+        haplotypes/
+            sample1.HP1.bam
+            sample1.HP1.bam.bai
+            sample1.HP2.bam
+            sample1.HP2.bam.bai
+            sample1.untagged.bam
+            sample1.untagged.bam.bai
+        methylation_haplotypes/
+            sample1.HP1.methylation.calls.bed
+            sample1.HP1.modkit.pileup.log
+            sample1.HP1.modkit.pileup.bedgraph.log
+            methylation_calls.HP1.bedgraph/*.bedgraph
+            sample1.HP2.methylation.calls.bed
+            sample1.HP2.modkit.pileup.log
+            sample1.HP2.modkit.pileup.bedgraph.log
+            methylation_calls.HP2.bedgraph/*.bedgraph
     sample2/
         ...
     report/
@@ -101,16 +147,16 @@ results/
 
 ## Components
 
-| Component | Version |
-|-----------|---------|
-| [Dorado](https://github.com/nanoporetech/dorado) | 1.2.0+f9443bb8 |
-| [minimap2](https://github.com/lh3/minimap2) | 2.30-r1287 |
-| [samtools](http://www.htslib.org/) | 1.13 |
-| [PEPPER-Margin-DeepVariant](https://github.com/kishwarshafin/pepper) | r0.8 |
-| [modkit](https://github.com/nanoporetech/modkit) | 0.5.0 |
-| [MultiQC](https://multiqc.info/) | 1.32 |
-| [bedtools](https://bedtools.readthedocs.io/) | 2.30.0 |
-| [bcftools](http://samtools.github.io/bcftools/) | 1.13 |
+| Component                                                            | Version        |
+| -------------------------------------------------------------------- | -------------- |
+| [Dorado](https://github.com/nanoporetech/dorado)                     | 1.2.0+f9443bb8 |
+| [minimap2](https://github.com/lh3/minimap2)                          | 2.30-r1287     |
+| [samtools](http://www.htslib.org/)                                   | 1.13           |
+| [PEPPER-Margin-DeepVariant](https://github.com/kishwarshafin/pepper) | r0.8           |
+| [modkit](https://github.com/nanoporetech/modkit)                     | 0.5.0          |
+| [MultiQC](https://multiqc.info/)                                     | 1.32           |
+| [bedtools](https://bedtools.readthedocs.io/)                         | 2.30.0         |
+| [bcftools](http://samtools.github.io/bcftools/)                      | 1.13           |
 
 ### Container Images
 
