@@ -3,6 +3,8 @@ process METHYLATION_CALL {
 
     input:
     tuple val(sampleid), path(bam), path(bai), val(haplotype)
+    path reference
+    path reference_fai
 
     output:
     tuple path("${sampleid}.${haplotype}.methylation.calls.bed"), path("${sampleid}.${haplotype}.modkit.pileup.log"), emit: modbed
@@ -18,7 +20,7 @@ process METHYLATION_CALL {
     ${bam} \
     methylation_calls.${haplotype}.bedgraph \
     --bedgraph \
-    --ref ${params.reference} \
+    --ref ${reference} \
     --cpg \
     --combine-strands \
     --ignore h \
@@ -27,7 +29,7 @@ process METHYLATION_CALL {
     modkit pileup \
     ${bam} \
     ${sampleid}.${haplotype}.methylation.calls.bed \
-    --ref ${params.reference} \
+    --ref ${reference} \
     --cpg \
     --combine-strands \
     --ignore h \

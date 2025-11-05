@@ -3,6 +3,8 @@ process VARIANT_CALL {
 
     input:
     tuple val(sampleid), path(bam), path(bai)
+    path reference
+    path reference_fai
 
     output:
     tuple val(sampleid), path("${sampleid}.aligned.sorted.haplotagged.bam"), path("${sampleid}.aligned.sorted.haplotagged.bam.bai"), emit: bam
@@ -16,7 +18,7 @@ process VARIANT_CALL {
     threads=\$((total_threads - 2))
     run_pepper_margin_deepvariant call_variant \
     -b ${sampleid}.aligned.sorted.bam \
-    -f ${params.reference} \
+    -f ${reference} \
     -o . \
     --gvcf \
     --sample_name ${sampleid} \
