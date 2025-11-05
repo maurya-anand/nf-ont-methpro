@@ -14,7 +14,7 @@ process ALIGNMENT {
     """
     total_threads=\$(nproc)
     threads=\$((total_threads - 2))
-    samtools view -@ \$threads ${reads}.basecalls.mod.bam | head -1 | grep -o "MM:Z:\\|ML:B:" > ${sampleid}.bam.mod.tags.txt
+    samtools view -@ \$threads ${reads} | head -1 | grep -o "MM:Z:\\|ML:B:" > ${sampleid}.bam.mod.tags.txt
     samtools fastq -T MM,ML,MN ${reads} | \
     minimap2 -ax map-ont -y --secondary=no -t \$threads ${params.reference} - 2> ${sampleid}.minimap2.log | \
     samtools view -@ \$threads -b | \
