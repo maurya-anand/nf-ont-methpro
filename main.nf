@@ -27,7 +27,7 @@ workflow {
     hp1_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype1.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP1") }
     hp2_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype2.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP2") }
     haplotype_bams_ch = hp1_ch.mix(hp2_ch)
-    METHYLATION_CALLING(haplotype_bams_ch)
+    METHYLATION_CALLING(haplotype_bams_ch, file(params.reference),file("${params.reference}.fai"))
     REPORT(
         MAPPING.out.stats.collect(),
         VARIANT_CALL_AND_PHASING.out.logs.collect(),
