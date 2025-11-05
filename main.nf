@@ -15,9 +15,9 @@ workflow {
         .map { row ->
             def meta = [
                 sampleid: row.sampleid,
-                pod5_dir: row.pod5_dir,
+                data_dir: row.data_dir,
             ]
-            def pod5_dir = file("${row.pod5_dir}/pod5")
+            def pod5_dir = file("${row.data_dir}/pod5")
             [meta, pod5_dir]
         }
     METHYLATED_BASECALLING(ont_reads_ch)

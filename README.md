@@ -20,9 +20,19 @@ A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing dat
 1. **Prepare your sample sheet** (CSV):
 
    ```csv
-   sampleid,pod5_dir
+   sampleid,data_dir
    sample1,/path/to/sample1
    sample2,/path/to/sample2
+   ```
+
+   **Note:** The pipeline expects a `pod5/` subdirectory within each `data_dir`. Your directory structure should look like:
+
+   ```text
+   /path/to/sample1/
+   └── pod5/
+       ├── file1.pod5
+       ├── file2.pod5
+       └── ...
    ```
 
 2. **Target regions** (BED)
