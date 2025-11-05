@@ -6,6 +6,7 @@ include { ONT_BASECALL as BASECALLING } from './modules/local/base_call'
 include { ALIGNMENT as MAPPING } from './modules/local/map_reads'
 include { VARIANT_CALL as VARIANT_CALLING } from './modules/local/variant_call'
 include { METHYLATION_CALL as METHYLATION_CALLING } from './modules/local/methylation_call'
+include { SPLIT_BAM as EXTRACT_READS_BY_HAPLOTYPE } from './modules/split_bam/'
 include { SUMMARY as REPORT } from './modules/local/generate_report'
 
 workflow {
@@ -22,13 +23,15 @@ workflow {
     BASECALLING(ont_reads_ch)
     MAPPING(BASECALLING.out.bam)
     VARIANT_CALLING(MAPPING.out.bam)
-    METHYLATION_CALLING(VARIANT_CALLING.out.bam)
-    summary_stats = MAPPING.out.stats
-    variant_logs = VARIANT_CALLING.out.logs
-    methylation_bed = METHYLATION_CALLING.out.modbed.map { i -> i[0] }
+    EXTRACT_READS_BY_HAPLOTYPE(MAPPING.out.bam)
+    hp1_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype1.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP1") }
+    hp2_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype2.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP2") }
+    haplotype_bams_ch = hp1_ch.mix(hp2_ch)
+    METHYLATION_CALLING(haplotype_bams_ch)
     REPORT(
-        summary_stats.collect(),
-        variant_logs.collect(),
-        methylation_bed.collect(),
+        MAPPING.out.stats.collect(),
+        VARIANT_CALLING.out.logs.collect(),
+        METHYLATION_CALLING.out.modbed.map { bed, _log -> bed },
+        METHYLATION_CALLING.out.bedgraph.map { bedgraphs, _log -> bedgraphs }
     )
 }
