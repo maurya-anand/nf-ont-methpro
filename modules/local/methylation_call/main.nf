@@ -24,6 +24,7 @@ process METHYLATION_CALL {
     --cpg \
     --combine-strands \
     --ignore h \
+    --seed 1234 \
     --threads \${threads} &> ${sampleid}.${haplotype}.modkit.pileup.bedgraph.log
     
     modkit pileup \
@@ -33,6 +34,7 @@ process METHYLATION_CALL {
     --cpg \
     --combine-strands \
     --ignore h \
+    --seed 1234 \
     --threads \${threads} &> ${sampleid}.${haplotype}.modkit.pileup.bed.log
     """
 }
