@@ -38,7 +38,6 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
           labels: |
-            org.opencontainers.image.source=${{ github.repository }}
             org.opencontainers.image.description=${{ github.repository }}/blob/main/README.md
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
