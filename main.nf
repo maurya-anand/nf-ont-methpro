@@ -5,8 +5,9 @@ nextflow.enable.dsl = 2
 include { ONT_BASECALL as METHYLATED_BASECALLING } from './modules/local/base_call'
 include { ALIGNMENT as MAPPING } from './modules/local/map_reads'
 include { VARIANT_CALL as VARIANT_CALL_AND_PHASING } from './modules/local/variant_call'
-include { METHYLATION_CALL as METHYLATION_CALLING } from './modules/local/methylation_call'
 include { SPLIT_BAM as EXTRACT_READS_BY_HAPLOTYPE } from './modules/split_bam/'
+include { METHYLATION_CALL as METHYLATION_CALLING } from './modules/local/methylation_call'
+include { DMR_CALL as DIFFERENTIAL_MODIFICATION } from './modules/local/dmr_call'
 include { SUMMARY as REPORT } from './modules/local/generate_report'
 
 workflow {
@@ -28,10 +29,19 @@ workflow {
     hp2_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype2.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP2") }
     haplotype_bams_ch = hp1_ch.mix(hp2_ch)
     METHYLATION_CALLING(haplotype_bams_ch, file(params.reference),file("${params.reference}.fai"))
+    hp1_modbed = METHYLATION_CALLING.out.modbed
+        .filter { _sampleid, haplotype, _bed, _log -> haplotype == "HP1" }
+        .map { sampleid, _haplotype, bed, _log -> tuple(sampleid, bed) }
+    hp2_modbed = METHYLATION_CALLING.out.modbed
+        .filter { _sampleid, haplotype, _bed, _log -> haplotype == "HP2" }
+    .map { sampleid, _haplotype, bed, _log -> tuple(sampleid, bed) }
+    dmr_input = hp1_modbed.join(hp2_modbed)
+    DIFFERENTIAL_MODIFICATION(dmr_input, file(params.reference), file("${params.reference}.fai"))
     REPORT(
         MAPPING.out.stats.collect(),
         VARIANT_CALL_AND_PHASING.out.logs.collect(),
         METHYLATION_CALLING.out.modbed.map { bed, _log -> bed },
-        METHYLATION_CALLING.out.bedgraph.map { bedgraphs, _log -> bedgraphs }
+        METHYLATION_CALLING.out.bedgraph.map { bedgraphs, _log -> bedgraphs },
+        DIFFERENTIAL_MODIFICATION.out.log
     )
 }
