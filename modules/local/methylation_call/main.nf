@@ -1,36 +1,36 @@
 process METHYLATION_CALL {
-    publishDir "${params.outdir}/${sampleid}/methylation", mode: 'copy'
+    publishDir "${params.outdir}/${sampleid}/methylation_haplotypes", mode: 'copy'
 
     input:
-    tuple val(sampleid), path(bam), path(bai)
+    tuple val(sampleid), path(bam), path(bai), val(haplotype)
 
     output:
-    tuple path("${sampleid}.methylation.calls.bed"), path("${sampleid}.modkit.pileup.log"), emit: modbed
-    tuple path("${sampleid}.modkit.pileup.bedgraph.log"), path("methylation_calls.bedgraph/*.bedgraph"), emit: bedgraph
+    tuple path("${sampleid}.${haplotype}.methylation.calls.bed"), path("${sampleid}.${haplotype}.modkit.pileup.log"), emit: modbed
+    tuple path("methylation_calls.${haplotype}.bedgraph/*.bedgraph"), path("${sampleid}.${haplotype}.modkit.pileup.bedgraph.log"), emit: bedgraph
 
     script:
     """
     total_threads=\$(nproc)
     threads=\$((total_threads - 2))
-    mkdir -p methylation_calls.bedgraph
+    mkdir -p methylation_calls.${haplotype}.bedgraph
     
     modkit pileup \
     ${bam} \
-    methylation_calls.bedgraph \
+    methylation_calls.${haplotype}.bedgraph \
     --bedgraph \
     --ref ${params.reference} \
     --cpg \
     --combine-strands \
     --ignore h \
-    --threads \${threads} &> ${sampleid}.modkit.pileup.bedgraph.log
+    --threads \${threads} &> ${sampleid}.${haplotype}.modkit.pileup.bedgraph.log
     
     modkit pileup \
     ${bam} \
-    ${sampleid}.methylation.calls.bed \
+    ${sampleid}.${haplotype}.methylation.calls.bed \
     --ref ${params.reference} \
     --cpg \
     --combine-strands \
     --ignore h \
-    --threads \${threads} &> ${sampleid}.modkit.pileup.log
+    --threads \${threads} &> ${sampleid}.${haplotype}.modkit.pileup.log
     """
 }
