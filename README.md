@@ -55,6 +55,8 @@ A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing dat
    }
    ```
 
+   **Note:** The reference file must have an index (`.fai`) file. Generate it with: `samtools faidx GrCh38.fa`
+
    For more information on basecall models and modification options, refer to the [Dorado documentation](https://software-docs.nanoporetech.com/dorado/latest/models/selection/#selecting-modified-base-models).
 
    When `--regions_bed` is provided:
@@ -100,7 +102,13 @@ The pipeline consists of the following main steps:
    - Produces both BED and bedGraph formats for visualization and analysis.
    - Output: Methylation BED and bedGraph files for HP1 and HP2.
 
-6. **Summary** (`SUMMARY`):
+6. **Differentially Methylated Regions (DMR)** (`DMR_CALL`):
+
+   - Identifies regions with significant methylation differences between haplotypes.
+   - Uses modkit [dmr pair](https://nanoporetech.github.io/modkit/intro_dmr.html#3-detecting-differential-modification-at-single-base-positions) to compare HP1 vs HP2 methylation patterns.
+   - Output: DMR BED file and analysis log.
+
+7. **Summary** (`SUMMARY`):
    - Aggregates stats and logs using MultiQC.
    - Output: MultiQC report
 
@@ -136,13 +144,16 @@ results/
             sample1.untagged.bam.bai
         methylation_haplotypes/
             sample1.HP1.methylation.calls.bed
-            sample1.HP1.modkit.pileup.log
+            sample1.HP1.modkit.pileup.bed.log
             sample1.HP1.modkit.pileup.bedgraph.log
-            methylation_calls.HP1.bedgraph/*.bedgraph
+            methylation_calls.HP1.bedGraph/*.bedgraph
             sample1.HP2.methylation.calls.bed
-            sample1.HP2.modkit.pileup.log
+            sample1.HP2.modkit.pileup.bed.log
             sample1.HP2.modkit.pileup.bedgraph.log
-            methylation_calls.HP2.bedgraph/*.bedgraph
+            methylation_calls.HP2.bedGraph/*.bedgraph
+        differentially_methylated_regions/
+            sample1.haplotype.differentially.methylated.regions.bed
+            sample1.dmr.log
     sample2/
         ...
     report/
