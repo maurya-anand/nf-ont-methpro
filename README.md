@@ -67,7 +67,7 @@ A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing dat
 > - For information on selecting basecall models and modification options, refer to the [Dorado documentation](https://software-docs.nanoporetech.com/dorado/latest/models/selection/#selecting-modified-base-models).
 > - When `--regions_bed` is provided:
 >   - Only reads overlapping the specified regions are extracted during haplotype splitting.
->   - MMethylation calling and DMR detection are restricted to these regions.
+>   - Methylation calling and DMR detection are restricted to these regions.
 >   - Significantly reduces processing time for targeted analysis.
 
 ## Workflow Overview
