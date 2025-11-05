@@ -5,7 +5,7 @@ process VARIANT_CALL {
     tuple val(sampleid), path(bam), path(bai)
 
     output:
-    tuple val(sampleid), path("${sampleid}.aligned.sorted.haplotagged.bam"), path("${sampleid}.aligned.sorted.haplotagged.bam"), emit: bam
+    tuple val(sampleid), path("${sampleid}.aligned.sorted.haplotagged.bam"), path("${sampleid}.aligned.sorted.haplotagged.bam.bai"), emit: bam
     tuple val(sampleid), path("${sampleid}.vcf"), path("${sampleid}.vcf.gz.tbi"), emit: vcf
     path("${sampleid}.visual_report.htm"), emit: report
     tuple path("${sampleid}.pepper.margin.deepvariant.log"), path("logs/*.log"), emit: logs
@@ -27,6 +27,7 @@ process VARIANT_CALL {
     --ont_r10_q20 >> ${sampleid}.pepper.margin.deepvariant.log 2>&1
     mv intermediate_files/PHASED.PEPPER_MARGIN.haplotagged.bam \
     ${sampleid}.aligned.sorted.haplotagged.bam
-    samtools index ${sampleid}.aligned.sorted.haplotagged.bam
+    mv intermediate_files/PHASED.PEPPER_MARGIN.haplotagged.bam.bai \
+    ${sampleid}.aligned.sorted.haplotagged.bam.bai
     """
 }
