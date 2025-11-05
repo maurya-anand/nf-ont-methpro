@@ -5,6 +5,7 @@ process SUMMARY {
         path(stats_files)
         path(log_files)
         path(methylation_bed)
+        path(methylation_bedgraph)
 
     output:
         path("multiqc_report.html"), emit: multiqc
@@ -13,11 +14,30 @@ process SUMMARY {
     script:
     """
     mkdir -p multiqc_input
-    cp \${stats_files} multiqc_input/
-    cp \${log_files} multiqc_input/
-    if [ -n "\${methylation_bed}" ]; then
-        cp \${methylation_bed} multiqc_input/
+    
+    # Copy stats and logs
+    for file in ${stats_files}; do
+        cp \$file multiqc_input/
+    done
+    
+    for file in ${log_files}; do
+        cp \$file multiqc_input/
+    done
+    
+    # Copy methylation bed files
+    if [ -n "${methylation_bed}" ] && [ "${methylation_bed}" != "null" ]; then
+        for file in ${methylation_bed}; do
+            [ -f \$file ] && cp \$file multiqc_input/
+        done
     fi
+    
+    # Copy methylation bedgraph files
+    if [ -n "${methylation_bedgraph}" ] && [ "${methylation_bedgraph}" != "null" ]; then
+        for file in ${methylation_bedgraph}; do
+            [ -f \$file ] && cp \$file multiqc_input/
+        done
+    fi
+    
     multiqc multiqc_input -o .
     """
 }
