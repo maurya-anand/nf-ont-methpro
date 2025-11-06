@@ -16,6 +16,11 @@ process VARIANT_CALL {
     """
     total_threads=\$(nproc)
     threads=\$((total_threads - 2))
+    export TMPDIR=\$PWD/tmp
+    export TEMP=\$TMPDIR
+    export TMP=\$TMPDIR
+    export PARALLEL_TMPDIR=\$TMPDIR
+    mkdir -p \$TMPDIR
     run_pepper_margin_deepvariant call_variant \
     -b ${sampleid}.aligned.sorted.bam \
     -f ${reference} \
