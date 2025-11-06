@@ -1,6 +1,6 @@
 # nf-ont-methpro: Oxford Nanopore Methylation Profiling Pipeline
 
-A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing data to to generate haplotype-resolved variant calls and DNA methylation profiles.
+A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing data to generate haplotype-resolved variant calls and DNA methylation profiles.
 
 ## Features
 
@@ -68,7 +68,6 @@ A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing dat
 > - When `--regions_bed` is provided:
 >   - Only reads overlapping the specified regions are extracted during haplotype splitting.
 >   - Methylation calling and DMR detection are restricted to these regions.
->   - Significantly reduces processing time for targeted analysis.
 
 ## Workflow Overview
 
@@ -76,17 +75,17 @@ The pipeline consists of the following main steps:
 
 1. **Basecalling** (`ONT_BASECALL`):
 
-   - Uses Dorado for basecalling and modified base detection. The output BAM file contains MM (modification type) and ML (modification likelihood) tags.
+   - Performs basecalling and modified base detection using `Dorado`. The output BAM file contains MM (modification type) and ML (modification likelihood) tags.
    - Output: Unaligned BAM with methylation tags.
 
 2. **Alignment** (`ALIGNMENT`):
 
-   - Aligns reads to the reference genome with minimap2.
+   - Aligns reads to the reference genome with `minimap2`.
    - Output: Aligned BAM, alignment statistics.
 
 3. **Variant Calling and Phasing** (`VARIANT_CALL`):
 
-   - Calls variants and haplotags reads using PEPPER-Margin-DeepVariant.
+   - Calls variants and haplotags reads using `PEPPER-Margin-DeepVariant`.
    - Output: Haplotagged BAM and VCF.
 
 4. **Haplotype Splitting** (`SPLIT_BAM`):
@@ -97,18 +96,17 @@ The pipeline consists of the following main steps:
 
 5. **Haplotype-Resolved Methylation Calling** (`METHYLATION_CALL`):
 
-   - Extracts and aggregates methylation calls separately for each haplotype using modkit.
-   - Produces both BED and bedGraph formats for visualization and analysis.
+   - Extracts and aggregates methylation calls separately for each haplotype using `modkit`.
+   - Generates both BED and bedGraph formats.
    - Output: Methylation BED and bedGraph files for HP1 and HP2.
 
 6. **Differentially Methylated Regions (DMR)** (`DMR_CALL`):
 
-   - Identifies regions with significant methylation differences between haplotypes.
-   - Uses `modkit dmr pair` to compare HP1 vs HP2 methylation patterns.
+   - Identifies regions with significant methylation differences between haplotypes using `modkit dmr pair`.
    - Output: DMR BED file and analysis log.
 
 7. **Summary** (`SUMMARY`):
-   - Aggregates stats and logs using MultiQC.
+   - Generates aggregated QC report using `MultiQC`.
    - Output: MultiQC report
 
 ## Output Directory Structure
@@ -131,7 +129,7 @@ results/
             sample1.aligned.sorted.haplotagged.bam.bai
             sample1.vcf
             sample1.vcf.gz.tbi
-            sample1.visual_report.htm
+            sample1.visual_report.html
             sample1.pepper.margin.deepvariant.log
             logs/*.log
         haplotypes/
@@ -162,8 +160,8 @@ results/
 
 > [!NOTE]
 >
-> The `sample1.*.methylation.calls.bed` file follows the [bedMethyl format](https://nanoporetech.github.io/modkit/intro_pileup.html#bedmethyl-column-descriptions)
-> The `sample1.haplotype.differentially.methylated.regions.bed` file follows the [differential methylation output format](https://nanoporetech.github.io/modkit/intro_dmr.html#differential-methylation-output-format)
+> - For `*.methylation.calls.bed` file format and column descriptions, see [modkit documentation](https://nanoporetech.github.io/modkit/intro_pileup.html#bedmethyl-column-descriptions).
+> - For `*.differentially.methylated.regions.bed` file format and column descriptions, see [modkit documentation](https://nanoporetech.github.io/modkit/intro_dmr.html#differential-methylation-output-format).
 
 ## Customization
 
@@ -185,8 +183,7 @@ results/
 
 ### Container Images
 
-- **PEPPER-DeepVariant container**: `kishwars/pepper_deepvariant:r0.8`  
-  Pre-built container for variant calling and haplotagging
+- PEPPER-Margin-DeepVariant: `kishwars/pepper_deepvariant:r0.8`
 
 ## Citation
 
