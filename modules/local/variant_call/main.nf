@@ -8,7 +8,7 @@ process VARIANT_CALL {
 
     output:
     tuple val(sampleid), path("${sampleid}.aligned.sorted.haplotagged.bam"), path("${sampleid}.aligned.sorted.haplotagged.bam.bai"), emit: bam
-    tuple val(sampleid), path("${sampleid}.vcf"), path("${sampleid}.vcf.gz.tbi"), emit: vcf
+    tuple val(sampleid), path("${sampleid}.vcf.gz"), path("${sampleid}.vcf.gz.tbi"), emit: vcf
     path("${sampleid}.visual_report.htm"), emit: report
     tuple path("${sampleid}.pepper.margin.deepvariant.log"), path("logs/*.log"), emit: logs
 
