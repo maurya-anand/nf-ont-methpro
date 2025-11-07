@@ -12,12 +12,14 @@ process SPLIT_BAM {
     script:
     def bed_option = params.regions_bed ? "-L ${params.regions_bed}" : ""
     """
+    total_threads=\$(nproc)
+    threads=\$((total_threads - 2))
     # Split haplotype 1 (HP:i:1)
-    samtools view -h -d HP:1 ${bed_option} ${bam} -o ${sampleid}.HP1.bam
+    samtools view -@ \$threads -h -d HP:1 ${bed_option} ${bam} -o ${sampleid}.HP1.bam
     samtools index ${sampleid}.HP1.bam
 
     # Split haplotype 2 (HP:i:2)
-    samtools view -h -d HP:2 ${bed_option} ${bam} -o ${sampleid}.HP2.bam
+    samtools view -@ \$threads -h -d HP:2 ${bed_option} ${bam} -o ${sampleid}.HP2.bam
     samtools index ${sampleid}.HP2.bam
 
     # Extract untagged reads (no HP tag)
