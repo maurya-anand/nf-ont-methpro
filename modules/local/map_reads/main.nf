@@ -15,13 +15,18 @@ process ALIGNMENT {
     script:
     """
     total_threads=\$(nproc)
-    threads=\$((total_threads - 2))
-    samtools view -@ \$threads ${reads} | head -1 | grep -o "MM:Z:\\|ML:B:" > ${sampleid}.bam.mod.tags.txt
-    samtools fastq -T MM,ML,MN ${reads} | \
-    minimap2 -ax map-ont -y --secondary=no -t \$threads ${reference} - 2> ${sampleid}.minimap2.log | \
-    samtools view -@ \$threads -b | \
-    samtools sort -@ \$threads -o ${sampleid}.aligned.sorted.bam && \
-    samtools index ${sampleid}.aligned.sorted.bam && \
-    samtools flagstat ${sampleid}.aligned.sorted.bam > ${sampleid}.alignment.stats.txt
+    available=\$((total_threads - 2))
+    minimap_threads=\$(( available * 7 / 10 ))
+    sort_threads=\$(( available * 2 / 10 ))
+    fastq_threads=\$(( available * 1 / 10 ))
+    [ \$minimap_threads -lt 1 ] && minimap_threads=1
+    [ \$sort_threads -lt 1 ] && sort_threads=1
+    [ \$fastq_threads -lt 1 ] && fastq_threads=1
+    samtools view -@ \$available ${reads} | head -1 | grep -o "MM:Z:\\|ML:B:" > ${sampleid}.bam.mod.tags.txt
+    samtools fastq -@ \$fastq_threads -T MM,ML,MN ${reads} | \
+    minimap2 -ax map-ont -y --secondary=no -t \$minimap_threads ${reference} - 2> ${sampleid}.minimap2.log | \
+    samtools sort -@ \$sort_threads -o ${sampleid}.aligned.sorted.bam -
+    samtools index -@ \$available ${sampleid}.aligned.sorted.bam
+    samtools flagstat -@ \$available ${sampleid}.aligned.sorted.bam > ${sampleid}.alignment.stats.txt
     """
 }
