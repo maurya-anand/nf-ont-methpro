@@ -7,18 +7,18 @@ process METHYLATION_CALL {
     path reference_fai
 
     output:
-    tuple val(sampleid), val(haplotype), path("${sampleid}.${haplotype}.methylation.calls.bed"), path("${sampleid}.${haplotype}.modkit.pileup.bedmethyl.log"), emit: modbed
-    tuple val(sampleid), val(haplotype), path("methylation_calls.${haplotype}.bedgraph/*.bedgraph"), path("${sampleid}.${haplotype}.modkit.pileup.bedgraph.log"), emit: bedgraph
+    tuple val(sampleid), val(haplotype), path("${sampleid}.${haplotype}.methylation.calls.bed"), path("${sampleid}.${haplotype}.modkit.pileup.bed.log"), emit: modbed
+    tuple val(sampleid), val(haplotype), path("${sampleid}.${haplotype}.methylation.calls.bedgraph/*.bedgraph"), path("${sampleid}.${haplotype}.modkit.pileup.bedgraph.log"), emit: bedgraph
 
     script:
     """
     total_threads=\$(nproc)
     threads=\$((total_threads - 2))
-    mkdir -p methylation_calls.${haplotype}.bedgraph
+    mkdir -p ${sampleid}.${haplotype}.methylation.calls.bedgraph
     
     modkit pileup \
     ${bam} \
-    methylation_calls.${haplotype}.bedgraph \
+    ${sampleid}.${haplotype}.methylation.calls.bedgraph \
     --bedgraph \
     --ref ${reference} \
     --cpg \
