@@ -40,8 +40,8 @@ workflow {
     REPORT(
         MAPPING.out.stats.collect(),
         VARIANT_CALL_AND_PHASING.out.logs.collect(),
-        METHYLATION_CALLING.out.modbed.map { bed, _log -> bed },
-        METHYLATION_CALLING.out.bedgraph.map { bedgraphs, _log -> bedgraphs },
+        METHYLATION_CALLING.out.modbed.map { _sampleid, _haplotype, bed, _log -> bed },
+        METHYLATION_CALLING.out.bedgraph.map { _sampleid, _haplotype, bedgraphs, _log -> bedgraphs },
         DIFFERENTIAL_MODIFICATION.out.log
     )
 }
