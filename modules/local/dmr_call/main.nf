@@ -32,7 +32,7 @@ process DMR_CALL {
       -o ${sampleid}.haplotype.differentially.methylated.regions.bed \
       --ref ${reference} \
       --base C \
-      --threads \${threads} \
+      --threads \$threads \
       --log-filepath ${sampleid}.dmr.log
     """
 }
