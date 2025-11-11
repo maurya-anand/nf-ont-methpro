@@ -22,27 +22,33 @@ workflow {
             [meta, pod5_dir]
         }
     METHYLATED_BASECALLING(ont_reads_ch)
-    MAPPING(METHYLATED_BASECALLING.out.bam,file(params.reference),file("${params.reference}.fai"))
-    VARIANT_CALL_AND_PHASING(MAPPING.out.bam,file(params.reference),file("${params.reference}.fai"))
+    MAPPING(METHYLATED_BASECALLING.out.bam, file(params.reference), file("${params.reference}.fai"))
+    VARIANT_CALL_AND_PHASING(MAPPING.out.bam, file(params.reference), file("${params.reference}.fai"))
     variant_logs_ch = VARIANT_CALL_AND_PHASING.out.main_log.mix(VARIANT_CALL_AND_PHASING.out.logs.flatten())
-    EXTRACT_READS_BY_HAPLOTYPE(VARIANT_CALL_AND_PHASING.out.bam,file(params.regions_bed))
+    EXTRACT_READS_BY_HAPLOTYPE(VARIANT_CALL_AND_PHASING.out.bam, file(params.regions_bed))
     hp1_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype1.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP1") }
     hp2_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype2.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP2") }
     haplotype_bams_ch = hp1_ch.mix(hp2_ch)
-    METHYLATION_CALLING(haplotype_bams_ch, file(params.reference),file("${params.reference}.fai"))
+    METHYLATION_CALLING(haplotype_bams_ch, file(params.reference), file("${params.reference}.fai"))
     hp1_modbed = METHYLATION_CALLING.out.modbed
         .filter { _sampleid, haplotype, _bed, _log -> haplotype == "HP1" }
         .map { sampleid, _haplotype, bed, _log -> tuple(sampleid, bed) }
     hp2_modbed = METHYLATION_CALLING.out.modbed
         .filter { _sampleid, haplotype, _bed, _log -> haplotype == "HP2" }
-    .map { sampleid, _haplotype, bed, _log -> tuple(sampleid, bed) }
+        .map { sampleid, _haplotype, bed, _log -> tuple(sampleid, bed) }
     dmr_input = hp1_modbed.join(hp2_modbed)
     DIFFERENTIAL_MODIFICATION(dmr_input, file(params.reference), file("${params.reference}.fai"))
     REPORT(
         MAPPING.out.stats.collect(),
         variant_logs_ch.collect(),
         METHYLATION_CALLING.out.modbed.map { _sampleid, _haplotype, bed, _log -> bed },
-        METHYLATION_CALLING.out.bedgraph.map { _sampleid, _haplotype, bedgraphs, _log -> bedgraphs }.flatten().collect(),
-        DIFFERENTIAL_MODIFICATION.out.log
+        METHYLATION_CALLING.out.bedgraph.map { sampleid, haplotype, bedgraphs, _log ->
+            [bedgraphs]
+                .flatten()
+                .collect { bedgraph_file ->
+                    file(bedgraph_file).copyTo("${sampleid}.${haplotype}.${file(bedgraph_file).name}")
+                }
+        }.flatten().collect(),
+        DIFFERENTIAL_MODIFICATION.out.log,
     )
 }
