@@ -42,13 +42,7 @@ workflow {
         MAPPING.out.stats.collect(),
         variant_logs_ch.collect(),
         METHYLATION_CALLING.out.modbed.map { _sampleid, _haplotype, bed, _log -> bed },
-        METHYLATION_CALLING.out.bedgraph.map { sampleid, haplotype, bedgraphs, _log ->
-            [bedgraphs]
-                .flatten()
-                .collect { bedgraph_file ->
-                    file(bedgraph_file).copyTo("${sampleid}.${haplotype}.${file(bedgraph_file).name}")
-                }
-        }.flatten().collect(),
+        METHYLATION_CALLING.out.bedgraph.map { _sampleid, _haplotype, bedgraphs, _log -> bedgraphs }.flatten().collect(),
         DIFFERENTIAL_MODIFICATION.out.log,
     )
 }

@@ -25,7 +25,10 @@ process METHYLATION_CALL {
     --combine-strands \
     --ignore h \
     --threads \${threads} &> ${sampleid}.${haplotype}.modkit.pileup.bedgraph.log
-    
+    for file in ${sampleid}.${haplotype}.methylation.calls.bedgraph/*.bedgraph; do
+        basename=\$(basename \$file)
+        mv \$file ${sampleid}.${haplotype}.methylation.calls.bedgraph/${sampleid}.${haplotype}.\$basename
+    done
     modkit pileup \
     ${bam} \
     ${sampleid}.${haplotype}.methylation.calls.bed \
