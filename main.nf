@@ -24,7 +24,7 @@ workflow {
     METHYLATED_BASECALLING(ont_reads_ch)
     MAPPING(METHYLATED_BASECALLING.out.bam,file(params.reference),file("${params.reference}.fai"))
     VARIANT_CALL_AND_PHASING(MAPPING.out.bam,file(params.reference),file("${params.reference}.fai"))
-    EXTRACT_READS_BY_HAPLOTYPE(VARIANT_CALL_AND_PHASING.out.bam)
+    EXTRACT_READS_BY_HAPLOTYPE(VARIANT_CALL_AND_PHASING.out.bam,file(params.regions_bed))
     hp1_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype1.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP1") }
     hp2_ch = EXTRACT_READS_BY_HAPLOTYPE.out.haplotype2.map { sampleid, bam, bai -> tuple(sampleid, bam, bai, "HP2") }
     haplotype_bams_ch = hp1_ch.mix(hp2_ch)
