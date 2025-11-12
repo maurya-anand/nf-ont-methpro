@@ -5,7 +5,7 @@ nextflow.enable.dsl = 2
 include { ONT_BASECALL as METHYLATED_BASECALLING } from './modules/local/base_call'
 include { ALIGNMENT as MAPPING } from './modules/local/map_reads'
 include { VARIANT_CALL as VARIANT_CALL_AND_PHASING } from './modules/local/variant_call'
-include { SPLIT_BAM as EXTRACT_READS_BY_HAPLOTYPE } from './modules/split_bam/'
+include { SPLIT_BAM as EXTRACT_READS_BY_HAPLOTYPE } from './modules/local/split_bam/'
 include { METHYLATION_CALL as METHYLATION_CALLING } from './modules/local/methylation_call'
 include { DMR_CALL as DIFFERENTIAL_MODIFICATION } from './modules/local/dmr_call'
 include { SUMMARY as REPORT } from './modules/local/generate_report'
