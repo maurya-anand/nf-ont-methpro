@@ -11,7 +11,7 @@ process VARIANT_CALL {
     tuple val(sampleid), path("${sampleid}.vcf.gz"), path("${sampleid}.vcf.gz.tbi"), emit: vcf
     path("${sampleid}.visual_report.html"), emit: report
     path("${sampleid}.pepper.margin.deepvariant.log"), emit: main_log
-    path("logs/*.log"), emit: logs
+    path("${sampleid}.logs/*.log"), emit: logs
 
     script:
     """
@@ -37,5 +37,12 @@ process VARIANT_CALL {
     ${sampleid}.aligned.sorted.haplotagged.bam
     mv intermediate_files/PHASED.PEPPER_MARGIN.haplotagged.bam.bai \
     ${sampleid}.aligned.sorted.haplotagged.bam.bai
+    # Rename logs folder and prefix log files
+    if [ -d "logs" ]; then
+        mv logs ${sampleid}.logs
+        for log in ${sampleid}.logs/*.log; do
+            [ -f "\$log" ] && mv "\$log" "${sampleid}.logs/${sampleid}.\$(basename \$log)"
+        done
+    fi
     """
 }
