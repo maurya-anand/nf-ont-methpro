@@ -18,6 +18,6 @@ RUN curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.2.0-lin
     curl -L "https://github.com/lh3/minimap2/releases/download/v2.30/minimap2-2.30_x64-linux.tar.bz2" -o minimap2-2.30_x64-linux.tar.bz2 && \
     tar -xvf minimap2-2.30_x64-linux.tar.bz2 && \
     rm minimap2-2.30_x64-linux.tar.bz2 && \
-    pip3 install multiqc
+    pip3 install multiqc pod5
 
 ENV PATH="/tools/dorado-1.2.0-linux-x64/bin:/tools/dist_modkit_v0.5.0_5120ef7:/tools/minimap2-2.30_x64-linux:$PATH"
