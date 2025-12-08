@@ -5,7 +5,7 @@ process ONT_BASECALL {
     tuple val(meta), path(pod5_dir)
 
     output:
-    tuple val(meta.sampleid), path("${meta.sampleid}.raw.mod.bam"), emit: bam
+    tuple val(meta.sampleid), path("${meta.sampleid}.${meta.run_id}.raw.mod.bam"), emit: bam
 
     script:
     """
@@ -20,6 +20,6 @@ process ONT_BASECALL {
     --emit-moves \\
     --device "\$DEVICE" \\
     --modified-bases ${params.basecall_modifications} > \\
-    ${meta.sampleid}.raw.mod.bam
+    ${meta.sampleid}.${meta.run_id}.raw.mod.bam
     """
 }
