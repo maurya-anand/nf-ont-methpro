@@ -21,17 +21,25 @@ A Nextflow DSL2 pipeline for processing Oxford Nanopore long-read sequencing dat
 
    ```csv
    sampleid,data_dir
-   sample1,/path/to/sample1
-   sample2,/path/to/sample2
+   sample1,/path/to/sample1/pod5/
+   sample2,/path/to/sample2/pod5/
    ```
 
-   **Note:** The pipeline expects a `pod5/` subdirectory within each `data_dir`. Your directory structure should look like:
+   **Note:** The pipeline expects the full path of the directory containing the `*.pod5` or `*.fast5` files. Your directory structure should look like:
 
    ```text
    /path/to/sample1/
    └── pod5/
        ├── file1.pod5
        ├── file2.pod5
+       └── ...
+   ```
+
+   ```text
+   /path/to/sample1/
+   └── fast5/
+       ├── file1.fast5
+       ├── file2.fast5
        └── ...
    ```
 
@@ -76,6 +84,7 @@ The pipeline consists of the following main steps:
 1. **Basecalling** (`ONT_BASECALL`):
 
    - Performs basecalling and modified base detection using `Dorado`. The output BAM file contains MM (modification type) and ML (modification likelihood) tags.
+   - Automatically detects and converts FAST5 files to POD5 format if needed before basecalling.
    - Output: Unaligned BAM with methylation tags.
 
 2. **Alignment** (`ALIGNMENT`):

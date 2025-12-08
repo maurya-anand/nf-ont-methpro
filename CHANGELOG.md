@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.0] - 2025-11-12
+## [1.1.0] - 2025-12-08
 
 ### Added
 
+- Automatically detects and converts FAST5 files to POD5 format if needed before basecalling.
 - Haplotype-specific methylation analysis workflow
   - New `SPLIT_BAM` module to split haplotagged BAM files by haplotype (HP1, HP2, untagged)
   - Optional region-based filtering using BED file (`--regions_bed` parameter)
