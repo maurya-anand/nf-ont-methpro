@@ -3,6 +3,7 @@
 nextflow.enable.dsl = 2
 
 include { ONT_BASECALL as METHYLATED_BASECALLING } from './modules/local/base_call'
+include { MERGE_BAMS } from './modules/local/merge_bams'
 include { ALIGNMENT as MAPPING } from './modules/local/map_reads'
 include { VARIANT_CALL as VARIANT_CALL_AND_PHASING } from './modules/local/variant_call'
 include { SPLIT_BAM as EXTRACT_READS_BY_HAPLOTYPE } from './modules/local/split_bam/'
@@ -14,15 +15,24 @@ workflow {
     ont_reads_ch = channel.fromPath(params.sample_sheet)
         .splitCsv(header: true, sep: ",")
         .map { row ->
+            def data_path = file(row.data_dir)
+            def run_id = data_path.parent.name
             def meta = [
                 sampleid: row.sampleid,
                 data_dir: row.data_dir,
+                run_id: run_id,
             ]
-            def pod5_dir = file("${row.data_dir}/pod5")
-            [meta, pod5_dir]
+            def data = file("${row.data_dir}")
+            [meta, data]
         }
     METHYLATED_BASECALLING(ont_reads_ch)
-    MAPPING(METHYLATED_BASECALLING.out.bam, file(params.reference), file("${params.reference}.fai"))
+    merged_bams_ch = METHYLATED_BASECALLING.out.bam
+        .groupTuple(by: 0)
+        .map { sampleid, bams ->
+            tuple(sampleid, bams.flatten())
+        }
+    MERGE_BAMS(merged_bams_ch)
+    MAPPING(MERGE_BAMS.out.bam, file(params.reference), file("${params.reference}.fai"))
     VARIANT_CALL_AND_PHASING(MAPPING.out.bam, file(params.reference), file("${params.reference}.fai"))
     variant_logs_ch = VARIANT_CALL_AND_PHASING.out.main_log.mix(VARIANT_CALL_AND_PHASING.out.logs.flatten())
     EXTRACT_READS_BY_HAPLOTYPE(VARIANT_CALL_AND_PHASING.out.bam, file(params.regions_bed))
