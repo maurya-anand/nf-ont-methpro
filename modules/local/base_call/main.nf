@@ -14,9 +14,17 @@ process ONT_BASECALL {
     else
         DEVICE="cpu"
     fi
+    if ls ${pod5_dir}/*.fast5 1> /dev/null 2>&1; then
+        echo "Found FAST5 files, converting to POD5..."
+        mkdir -p pod5
+        pod5 convert fast5 ${pod5_dir}/*.fast5 --output pod5/ --one-to-one ${pod5_dir}/
+        INPUT_DIR="pod5"
+    else
+        INPUT_DIR="${pod5_dir}"
+    fi
     dorado basecaller \\
     ${params.basecall_model} \\
-    ${pod5_dir}/ \\
+    \$INPUT_DIR \\
     --emit-moves \\
     --device "\$DEVICE" \\
     --modified-bases ${params.basecall_modifications} > \\
