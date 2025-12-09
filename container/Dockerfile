@@ -9,9 +9,9 @@ RUN apt-get update && \
 
 WORKDIR /tools
 
-RUN curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.2.0-linux-x64.tar.gz" -o dorado-1.2.0-linux-x64.tar.gz && \
-    tar -xzf dorado-1.2.0-linux-x64.tar.gz && \
-    rm dorado-1.2.0-linux-x64.tar.gz && \
+RUN curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-0.9.6-linux-x64.tar.gz" -o dorado-0.9.6-linux-x64.tar.gz && \
+    tar -xzf dorado-0.9.6-linux-x64.tar.gz && \
+    rm dorado-0.9.6-linux-x64.tar.gz && \
     curl -L "https://github.com/nanoporetech/modkit/releases/download/v0.5.0/modkit_v0.5.0_u16_x86_64.tar.gz" -o modkit_v0.5.0_u16_x86_64.tar.gz && \
     tar -xzf modkit_v0.5.0_u16_x86_64.tar.gz && \
     rm modkit_v0.5.0_u16_x86_64.tar.gz && \
@@ -20,4 +20,4 @@ RUN curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.2.0-lin
     rm minimap2-2.30_x64-linux.tar.bz2 && \
     pip3 install multiqc pod5
 
-ENV PATH="/tools/dorado-1.2.0-linux-x64/bin:/tools/dist_modkit_v0.5.0_5120ef7:/tools/minimap2-2.30_x64-linux:$PATH"
+ENV PATH="/tools/dorado-0.9.6-linux-x64/bin:/tools/dist_modkit_v0.5.0_5120ef7:/tools/minimap2-2.30_x64-linux:$PATH"
