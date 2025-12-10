@@ -5,7 +5,7 @@ process ONT_BASECALL {
     tuple val(meta), path(pod5_dir)
 
     output:
-    tuple val(meta.sampleid), path("${meta.sampleid}.${meta.run_id}.raw.mod.bam"), emit: bam
+    tuple val(meta.sampleid), path("${meta.sampleid}.${meta.run_id}.trim.mod.bam"), emit: bam
 
     script:
     """
@@ -22,6 +22,8 @@ process ONT_BASECALL {
     else
         INPUT_DIR="${pod5_dir}"
     fi
+    total_threads=\$(nproc)
+    available=\$((total_threads - 2))
     dorado basecaller \\
     ${params.basecall_model} \\
     \$INPUT_DIR \\
@@ -29,5 +31,10 @@ process ONT_BASECALL {
     --device "\$DEVICE" \\
     --modified-bases ${params.basecall_modifications} > \\
     ${meta.sampleid}.${meta.run_id}.raw.mod.bam
+
+    dorado trim \\
+    --threads \$available \\
+    ${meta.sampleid}.${meta.run_id}.raw.mod.bam > \\
+    ${meta.sampleid}.${meta.run_id}.trim.mod.bam
     """
 }
