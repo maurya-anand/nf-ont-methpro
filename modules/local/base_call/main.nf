@@ -28,7 +28,8 @@ process ONT_BASECALL {
     ${params.basecall_model} \\
     \$INPUT_DIR \\
     --emit-moves \\
-    --device "\$DEVICE" > \\
+    --device "\$DEVICE" \\
+    --modified-bases ${params.basecall_modifications} > \\
     ${meta.sampleid}.${meta.run_id}.raw.mod.bam
 
     dorado trim \\
