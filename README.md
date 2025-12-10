@@ -181,7 +181,7 @@ results/
 
 | Component                                                            | Version        |
 | -------------------------------------------------------------------- | -------------- |
-| [Dorado](https://github.com/nanoporetech/dorado)                     | 1.2.0+f9443bb8 |
+| [Dorado](https://github.com/nanoporetech/dorado)                     | 0.9.6          |
 | [minimap2](https://github.com/lh3/minimap2)                          | 2.30-r1287     |
 | [samtools](http://www.htslib.org/)                                   | 1.13           |
 | [PEPPER-Margin-DeepVariant](https://github.com/kishwarshafin/pepper) | r0.8           |
