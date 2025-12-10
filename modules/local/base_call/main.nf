@@ -34,7 +34,10 @@ process ONT_BASECALL {
 
     dorado trim \\
     --threads \$available \\
-    ${meta.sampleid}.${meta.run_id}.raw.mod.bam > \\
-    ${meta.sampleid}.${meta.run_id}.trim.mod.bam
+    ${meta.sampleid}.${meta.run_id}.raw.mod.bam | \\
+    samtools view \\
+    -h -b -q 7 -e 'length(seq) >= 50' \\
+    -@ \$available \\
+    -o ${meta.sampleid}.${meta.run_id}.trim.mod.bam
     """
 }
