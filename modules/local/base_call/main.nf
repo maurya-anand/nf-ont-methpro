@@ -26,7 +26,7 @@ process ONT_BASECALL {
             # Convert individually with per-file timeout
             for f in ${pod5_dir}/*.fast5; do
                 fname=\$(basename "\$f" .fast5)
-                timeout 4400 pod5 convert fast5 "\$f" --output pod5/ --force-overwrite 2>&1 | grep -v "Converting" || {
+                timeout 360 pod5 convert fast5 "\$f" --output pod5/ --force-overwrite 2>&1 | grep -v "Converting" || {
                     echo "WARNING: Skipping problematic file: \$f" >&2
                 }
             done
