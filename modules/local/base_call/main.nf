@@ -20,13 +20,13 @@ process ONT_BASECALL {
         echo "Found FAST5 files, converting to POD5..."
         mkdir -p pod5
         export POD5_DEBUG=1
-        timeout 9900 pod5 convert fast5 ${pod5_dir}/*.fast5 --output pod5/ --one-to-one ${pod5_dir}/ --threads \$available --force-overwrite 2>&1 || {
+        timeout 4400 pod5 convert fast5 ${pod5_dir}/*.fast5 --output pod5/ --one-to-one ${pod5_dir}/ --threads \$available --force-overwrite 2>&1 || {
             echo "Batch conversion timed out or failed, converting files individually..."
             
             # Convert individually with per-file timeout
             for f in ${pod5_dir}/*.fast5; do
                 fname=\$(basename "\$f" .fast5)
-                timeout 5500 pod5 convert fast5 "\$f" --output pod5/ --force-overwrite 2>&1 | grep -v "Converting" || {
+                timeout 4400 pod5 convert fast5 "\$f" --output pod5/ --force-overwrite 2>&1 | grep -v "Converting" || {
                     echo "WARNING: Skipping problematic file: \$f" >&2
                 }
             done
