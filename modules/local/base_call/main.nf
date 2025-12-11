@@ -51,6 +51,7 @@ process ONT_BASECALL {
 
     dorado trim \\
     --threads \$available \\
+    --sequencing-kit ${params.sequencing_kit} \\
     ${meta.sampleid}.${meta.run_id}.raw.mod.bam | \\
     samtools view \\
     -h -b -q 7 -e 'length(seq) >= 50' \\
