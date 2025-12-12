@@ -27,10 +27,7 @@ workflow {
         }
     METHYLATED_BASECALLING(ont_reads_ch)
     merged_bams_ch = METHYLATED_BASECALLING.out.bam
-        .groupTuple(by: 0)
-        .map { sampleid, bams ->
-            tuple(sampleid, bams.flatten())
-        }
+        .groupTuple()
     MERGE_BAMS(merged_bams_ch)
     MAPPING(MERGE_BAMS.out.bam, file(params.reference), file("${params.reference}.fai"))
     VARIANT_CALL_AND_PHASING(MAPPING.out.bam, file(params.reference), file("${params.reference}.fai"))
