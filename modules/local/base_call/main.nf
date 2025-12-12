@@ -5,7 +5,7 @@ process ONT_BASECALL {
     tuple val(meta), path(pod5_dir)
 
     output:
-    tuple val(meta.sampleid), path("${meta.sampleid}.${meta.run_id}.trim.mod.bam"), emit: bam
+    tuple val(meta.sampleid), path("${meta.sampleid}.${meta.run_id}.raw.mod.bam"), emit: bam
 
     script:
     """
@@ -48,14 +48,5 @@ process ONT_BASECALL {
     --device "\$DEVICE" \\
     --modified-bases ${params.basecall_modifications} > \\
     ${meta.sampleid}.${meta.run_id}.raw.mod.bam
-
-    dorado trim \\
-    --threads \$available \\
-    --sequencing-kit ${params.sequencing_kit} \\
-    ${meta.sampleid}.${meta.run_id}.raw.mod.bam | \\
-    samtools view \\
-    -h -b -q 7 -e 'length(seq) >= 50' \\
-    -@ \$available \\
-    -o ${meta.sampleid}.${meta.run_id}.trim.mod.bam
     """
 }
